@@ -1,0 +1,30 @@
+.cases {
+  display: flex;
+  height: 26vh;
+  width: 2;
+  flex-wrap: wrap;
+  max-width: 54vmax;
+  margin-left: auto;
+  margin-right: auto;
+  cursor: pointer;
+}
+
+.case {
+  position: relative;
+  height: 5vmax;
+  width: 7vmax;
+  margin: 1vmax;
+  font-size: 2.5vmax;
+}
+.case .number {
+  color: black;
+  position: absolute;
+  top: 60%;
+  font-weight: bold;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.case.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
