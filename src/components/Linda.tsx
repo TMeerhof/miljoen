@@ -1,29 +1,41 @@
 import classNames from "classnames";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./Linda.css";
 import useInterval from "../hooks/useIterval";
 import useDeepCompareMemoize from "../hooks/useDeepCompareMemoize";
 import useSound from "use-sound";
-const lindaSound = require("./linda/linda.mp3");
+import { sample } from "lodash";
+import { messages, messageKeys, messageString } from "./linda/LindaMessage";
+const sound = require("./linda/animalese.wav");
 
 interface Props {
-  msg: string;
+  msg: messageKeys;
+  casesToOpen: number;
+  lastAmount: number;
+  bank: number;
 }
-const Linda: React.FC<Props> = ({ msg }) => {
+const Linda: React.FC<Props> = ({ msg, casesToOpen, bank, lastAmount }) => {
+  const memoMsg = useDeepCompareMemoize<messageString[]>(messages[msg]);
   const [start, setStart] = useState(false);
-  const memoMsg = useDeepCompareMemoize(msg);
   const [active, setActive] = useState(false);
-  const letterMemo = useMemo(
-    () => memoMsg.split("").map((char) => ({ char, visible: false })),
-    [memoMsg]
-  );
-  const [letters, setLetters] = useState(letterMemo);
+  const letterMemo = useMemo(() => {
+    const picked = sample(memoMsg) as messageString;
+    return picked({ casesToOpen, bank, lastAmount })
+      .split("")
+      .map((char) => ({ char, visible: false }));
+  }, [memoMsg, bank, casesToOpen]);
 
-  const [playLinda, { stop: stopLinda }] = useSound(lindaSound.default);
+  const [letters, setLetters] = useState(letterMemo);
+  const [playLinda, { stop: stopLinda }] = useSound(sound.default);
+
   useEffect(() => {
     if (!start) return;
+    stopLinda();
+
     setActive(true);
-  }, [letterMemo, start]);
+    playLinda();
+    setLetters(letterMemo);
+  }, [letterMemo, start, playLinda, stopLinda]);
   useInterval(
     () => {
       const index = letters.findIndex((obj) => !obj.visible);
@@ -33,15 +45,13 @@ const Linda: React.FC<Props> = ({ msg }) => {
         return;
       }
       letters[index].visible = true;
-      console.log(letters);
       setLetters([...letters]);
     },
-    active ? 100 : null
+    active ? 50 : null
   );
 
   const handleStart = () => {
     setStart(true);
-    playLinda();
   };
 
   return (
@@ -58,12 +68,12 @@ const Linda: React.FC<Props> = ({ msg }) => {
             </div>
           </div>
           <div className="linda-speak">
-            <div className="tuutje"></div>
             <div className="msg">
               {letters.map((props, i) => (
                 <Letter key={`letter-${i}`} {...props} />
               ))}
             </div>
+            <div className="tuutje"></div>
           </div>
         </>
       ) : (
@@ -78,7 +88,6 @@ interface CharProps {
   visible: boolean;
 }
 const Letter: React.FC<CharProps> = ({ char, visible }) => {
-  console.log("render letter");
   return <span className={classNames("letter", { visible })}>{char}</span>;
 };
 export default Linda;

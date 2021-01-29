@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import React, { Children } from "react";
 import "./MoneyOptions.css";
+import { formatMoney } from "../domain/Money";
 
 interface Props {
   startMoney: number[];
@@ -55,12 +56,3 @@ const MoneyBar: React.FC<MoneyBarProps> = ({ amount, hidden }) => {
 };
 
 export default MoneyOptions;
-
-const moneyFormatter = new Intl.NumberFormat("nl-NL", {
-  style: "currency",
-  currency: "EUR",
-});
-
-function formatMoney(amount: number) {
-  return moneyFormatter.format(amount);
-}

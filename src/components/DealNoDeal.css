@@ -1,0 +1,37 @@
+.deal {
+  position: relative;
+  height: 10vh;
+}
+.bank {
+  display: flex;
+  background: #1fd21e;
+  height: 8vh;
+  border-radius: 1vh;
+  justify-content: center;
+  align-items: center;
+}
+.bank .amount {
+  font-size: 200%;
+  color: white;
+}
+
+.button {
+  cursor: pointer;
+  width: 9vh;
+  height: 8vh;
+  margin-top: 2vh;
+  margin-left: 2vh;
+  background-image: url(./button.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.stop {
+  cursor: pointer;
+  width: 6vh;
+  height: 8vh;
+  margin-top: 2vh;
+  margin-left: 2vh;
+  background-image: url(./stop.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+}
