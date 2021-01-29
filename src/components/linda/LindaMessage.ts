@@ -13,7 +13,7 @@ export const messages = {
   ],
   first6: [
     (params: StringParams) =>
-      "Dan kunnen we nu echt beginnen!! Kies nu eerste zes koffers, dan krijg je een aanbod van de bank",
+      "Dan kunnen we nu echt beginnen!! Kies nu je eerste zes koffers, dan krijg je een aanbod van de bank!",
   ],
   bank: [
     (params: StringParams) =>

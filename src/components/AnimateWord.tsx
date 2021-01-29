@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import React, { useEffect, useMemo, useState } from "react";
 import useInterval from "../hooks/useIterval";
+import "./AnimateWord.css";
 
 interface Props {
   active: boolean;
@@ -8,31 +9,44 @@ interface Props {
   handleDone: () => void;
 }
 
+const notVisible = (char: CharProps) => !char.visible;
+
 const AnimateWord: React.FC<Props> = ({ active, msg, handleDone }) => {
-  const letterMemo = useMemo(() => {
-    return msg.split("").map((char) => ({ char, visible: false }));
+  const sentenceMemo: CharProps[][] = useMemo(() => {
+    const words = msg.split(" ");
+    return words.map((chars) =>
+      chars.split("").map((char) => ({ char, visible: false }))
+    );
   }, [msg]);
+
   useEffect(() => {
-    setLetters(letterMemo);
-  }, [letterMemo]);
-  const [letters, setLetters] = useState(letterMemo);
+    setSentence(sentenceMemo);
+  }, [sentenceMemo]);
+
+  const [sentence, setSentence] = useState(sentenceMemo);
 
   useInterval(
     () => {
-      const index = letters.findIndex((obj) => !obj.visible);
-      if (index === -1) {
+      const wordIndex = sentence.findIndex((word) => word.some(notVisible));
+      if (wordIndex === -1) {
         handleDone();
         return;
       }
-      letters[index].visible = true;
-      setLetters([...letters]);
+      const charIndex = sentence[wordIndex].findIndex(notVisible);
+      sentence[wordIndex][charIndex].visible = true;
+      setSentence([...sentence]);
     },
     active ? 50 : null
   );
 
   return (
     <div className="msg">
-      <Words chars={letters} />
+      {sentence.map((chars, i) => (
+        <>
+          <Word chars={chars} />
+          <span className="letter"> </span>
+        </>
+      ))}
     </div>
   );
 };
@@ -42,13 +56,13 @@ export default AnimateWord;
 interface WordProps {
   chars: CharProps[];
 }
-const Words: React.FC<WordProps> = ({ chars }) => {
+const Word: React.FC<WordProps> = ({ chars }) => {
   return (
-    <>
+    <div className="word">
       {chars.map((props, i) => (
         <Letter key={`letter-${i}`} {...props} />
       ))}
-    </>
+    </div>
   );
 };
 
