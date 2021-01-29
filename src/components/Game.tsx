@@ -98,6 +98,7 @@ const Game: React.FC<{}> = () => {
 
   return (
     <div className="game">
+      <div className="backdrop" />
       <MoneyOptions startMoney={allMoney} money={moneyLeft}>
         <div className="mid">
           <Linda
