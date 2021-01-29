@@ -71,5 +71,9 @@ interface CharProps {
   visible: boolean;
 }
 const Letter: React.FC<CharProps> = ({ char, visible }) => {
-  return <span className={classNames("letter", { visible })}>{char}</span>;
+  return char === "\n" ? (
+    <span className="break-line"></span>
+  ) : (
+    <span className={classNames("letter", { visible })}>{char}</span>
+  );
 };

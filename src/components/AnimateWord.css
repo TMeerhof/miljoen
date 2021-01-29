@@ -13,6 +13,10 @@
   opacity: 1;
   display: inline-block;
 }
+.break-line {
+  display: block;
+  clear: both;
+}
 
 @keyframes bounceIn {
   0% {
