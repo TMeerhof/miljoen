@@ -21,3 +21,9 @@
   display: flex;
   flex-direction: column;
 }
+
+.reset {
+  color: white;
+  height: 2vh;
+  cursor: pointer;
+}

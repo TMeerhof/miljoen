@@ -1,6 +1,5 @@
 .cases {
   display: flex;
-  height: 26vh;
   width: 2;
   flex-wrap: wrap;
   max-width: 54vmax;

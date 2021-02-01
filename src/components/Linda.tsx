@@ -9,22 +9,31 @@ import AnimateWord from "./AnimateWord";
 const sound = require("./linda/animalese.wav");
 
 interface Props {
-  msg: messageKeys;
+  msg: messageKeys[];
   casesToOpen: number;
   lastAmount: number;
   bank: number;
+  mine: number | undefined;
 }
 
-const Linda: React.FC<Props> = ({ msg, casesToOpen, bank, lastAmount }) => {
-  const memoMsg = useDeepCompareMemoize<messageString[]>(messages[msg]);
+const Linda: React.FC<Props> = ({
+  msg,
+  casesToOpen,
+  bank,
+  lastAmount,
+  mine,
+}) => {
+  const msgList = useDeepCompareMemoize<messageKeys[]>(msg);
   const [start, setStart] = useState(false);
   const [active, setActive] = useState(false);
 
   const sentence = useMemo(() => {
-    const picked = sample(memoMsg) as messageString;
-    return picked({ casesToOpen, bank, lastAmount });
-  }, [memoMsg, bank, casesToOpen, lastAmount]);
-  console.log(sentence);
+    return msgList.reduce((memo, key) => {
+      const options = messages[key];
+      const picked = sample(options) as messageString;
+      return [memo, picked({ casesToOpen, bank, lastAmount, mine })].join(" ");
+    }, "");
+  }, [msgList, bank, casesToOpen, lastAmount, mine]);
 
   const [playLinda, { stop: stopLinda }] = useSound(sound.default);
 
@@ -45,29 +54,29 @@ const Linda: React.FC<Props> = ({ msg, casesToOpen, bank, lastAmount }) => {
 
   return (
     <div className="linda-total">
-      {start ? (
-        <>
-          <div className="linda-container">
-            <div className={classNames("linda", { active })}>
-              <div className="part body"></div>
-              <div className="part head">
-                <div className="part main"></div>
-                <div className="part mouth"></div>
-              </div>
+      <>
+        <div className="linda-container">
+          <div className={classNames("linda", { active })}>
+            <div className="part body"></div>
+            <div className="part head">
+              <div className="part main"></div>
+              <div className="part mouth"></div>
             </div>
           </div>
-          <div className="linda-speak">
+        </div>
+        <div className="linda-speak">
+          {!start ? (
+            <button onClick={handleStart}>Start</button>
+          ) : (
             <AnimateWord
               msg={sentence}
               active={active}
               handleDone={handleDone}
             />
-            <div className="tuutje"></div>
-          </div>
-        </>
-      ) : (
-        <button onClick={handleStart}>Start</button>
-      )}
+          )}
+          <div className="tuutje"></div>
+        </div>
+      </>
     </div>
   );
 };

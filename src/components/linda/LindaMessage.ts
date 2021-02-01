@@ -4,22 +4,26 @@ interface StringParams {
   casesToOpen: number;
   bank: number;
   lastAmount: number;
+  mine: number | undefined;
 }
+
+const PluralCase = (params: StringParams) =>
+  params.casesToOpen === 1 ? "één koffer" : `${params.casesToOpen} koffers`;
 
 export const messages = {
   start: [
     (params: StringParams) =>
-      "Welkom bij miljoenenjacht, kies nu je  eigen koffer",
+      "Welkom bij miljoenenjacht, kies nu eerst je  eigen koffer",
   ],
   first6: [
     (params: StringParams) =>
-      "Dan kunnen we nu echt beginnen!!\n Kies nu je eerste zes koffers, dan krijg je een aanbod van de bank!",
+      `Dan kunnen we nu echt beginnen!!\n Kies nu je eerste ${PluralCase(
+        params
+      )}, dan krijg je een aanbod van de bank!`,
   ],
   bank: [
     (params: StringParams) =>
-      `${formatMoney(
-        params.lastAmount
-      )}. Dan is het nu tijd voor de bank, spannend, wat zou het worden?!`,
+      `Dan is het nu tijd voor de bank, spannend!!, wat zou het worden?!`,
   ],
   bankResult: [
     (params: StringParams) =>
@@ -28,24 +32,40 @@ export const messages = {
       )}!! Dat is nog is een mooi aanbod, nou DEAL of niet?`,
   ],
   continue: [
-    (params: StringParams) =>
-      `Gaan we nu weer lekker verder met ${params.casesToOpen} koffers`,
+    (params: StringParams) => `Nog  ${PluralCase(params)} tot de bank`,
   ],
   regular: [
-    (params: StringParams) =>
-      `${formatMoney(params.lastAmount)}. Nog ${params.casesToOpen} koffers`,
+    (params: StringParams) => `${formatMoney(params.lastAmount)}.`,
+    (params: StringParams) => `${formatMoney(params.lastAmount)}, prima.`,
   ],
   expensive: [
     (params: StringParams) =>
-      `Ai, ${formatMoney(params.lastAmount)}! Dat is een dure, balen!!. Nog ${
-        params.casesToOpen
-      } koffers tot de bank`,
+      `Ai, ${formatMoney(params.lastAmount)}! Dat is een dure, balen!!`,
   ],
   cheap: [
     (params: StringParams) =>
-      `Fijn zo'n goedkope ${formatMoney(params.lastAmount)}!! Nog ${
-        params.casesToOpen
-      } koffers, kom op`,
+      `Fijn zo'n goedkope ${formatMoney(params.lastAmount)}!!`,
+  ],
+  deal: [
+    (params: StringParams) =>
+      `${formatMoney(
+        params.lastAmount
+      )}!!!! Gefeliciteerd! Wat ga je er mee doen?`,
+  ],
+  checkOwn: [
+    (params: StringParams) => `laten we nu kijken wat in je eigen koffer zit`,
+  ],
+  showOwn: [
+    (params: StringParams) =>
+      `${formatMoney(params.mine)}! Zat dat er gewoon heel de tijd al in, joh!`,
+  ],
+  end: [
+    (params: StringParams) =>
+      `${formatMoney(params.mine)}! Helemaal uitgespeeld, succes er mee`,
+  ],
+  noDeal: [
+    (params: StringParams) =>
+      `Gaan we nu weer lekker verder met ${params.casesToOpen} koffers`,
   ],
 };
 

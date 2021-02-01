@@ -28,6 +28,8 @@ const money = [
   5000000,
 ];
 
+const money2 = [100, 500, 1000, 2500, 5000, 10000];
+
 const boxes = _.range(1, money.length + 1);
 
 export function startMoney() {

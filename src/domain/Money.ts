@@ -3,6 +3,6 @@ const moneyFormatter = new Intl.NumberFormat("nl-NL", {
   currency: "EUR",
 });
 
-export function formatMoney(amount: number) {
-  return moneyFormatter.format(amount);
+export function formatMoney(amount: number | undefined) {
+  return moneyFormatter.format(amount || 0);
 }
