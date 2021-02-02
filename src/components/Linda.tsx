@@ -6,6 +6,7 @@ import useSound from "use-sound";
 import { sample } from "lodash";
 import { messages, messageKeys, messageString } from "./linda/LindaMessage";
 import AnimateWord from "./AnimateWord";
+import { DealButton } from "./DealNoDeal";
 const sound = require("./linda/animalese.wav");
 
 interface Props {
@@ -66,7 +67,10 @@ const Linda: React.FC<Props> = ({
         </div>
         <div className="linda-speak">
           {!start ? (
-            <button onClick={handleStart}>Start</button>
+            <div>
+              Start:
+              <DealButton onclick={handleStart} />
+            </div>
           ) : (
             <AnimateWord
               msg={sentence}

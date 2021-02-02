@@ -8,6 +8,8 @@
   position: relative;
 }
 .linda-speak {
+  font-family: impact;
+  font-size: 150%;
   display: flex;
   justify-content: center;
   align-items: center;

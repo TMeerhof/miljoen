@@ -152,11 +152,9 @@ const Game: React.FC<{}> = () => {
             lastAmount={lastAmount}
             mine={mine && mapping.get(mine)}
           />
-          {showBank && (
-            <DeaLQuestion handleResponce={handleDealResponse}>
-              {formatMoney(bank)}
-            </DeaLQuestion>
-          )}
+          <DeaLQuestion handleResponce={handleDealResponse} showBank={showBank}>
+            {formatMoney(bank)}
+          </DeaLQuestion>
           <div>
             <Cases
               allCases={allCases}
