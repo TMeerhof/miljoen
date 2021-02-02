@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import React, { Children } from "react";
+import React from "react";
 import "./MoneyOptions.css";
 import { formatMoney } from "../domain/Money";
 
@@ -12,8 +12,6 @@ const MoneyOptions: React.FC<Props> = ({ startMoney, money, children }) => {
   const half = Math.floor(startMoney.length / 2);
   const left = startMoney.slice(0, half);
   const right = startMoney.slice(half);
-  console.log(left, right, startMoney, half);
-
   return (
     <div className="money">
       <div className="money-zone">

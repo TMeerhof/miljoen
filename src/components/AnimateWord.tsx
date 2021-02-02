@@ -43,7 +43,7 @@ const AnimateWord: React.FC<Props> = ({ active, msg, handleDone }) => {
     <div className="msg">
       {sentence.map((chars, i) => (
         <>
-          <Word chars={chars} />
+          <Word chars={chars} key={`word-${i}`} />
           <span className="letter"> </span>
         </>
       ))}

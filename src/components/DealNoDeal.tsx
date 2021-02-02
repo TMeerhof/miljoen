@@ -1,23 +1,32 @@
-import React from "react";
+import React, { useEffect } from "react";
+import useSound from "use-sound";
 import "./DealNoDeal.css";
+const siren = require("./siren.mp3");
 
 interface Props {
-  handleResponce: (deal: boolean) => void;
+  handleResponse: (deal: boolean) => void;
   showBank: boolean;
 }
 
 const DeaLQuestion: React.FC<Props> = ({
-  handleResponce,
+  handleResponse,
   children,
   showBank,
 }) => {
+  const [playSiren] = useSound(siren.default);
+  useEffect(() => {
+    if (showBank) {
+      playSiren();
+    }
+  }, [showBank, playSiren]);
+
   return (
     <div className="deal">
       {showBank && (
         <div className="bank">
           <div className="amount">{children}</div>
-          <DealButton onclick={() => handleResponce(true)}></DealButton>
-          <div className="stop" onClick={() => handleResponce(false)}></div>
+          <DealButton onclick={() => handleResponse(true)}></DealButton>
+          <div className="stop" onClick={() => handleResponse(false)}></div>
         </div>
       )}
     </div>

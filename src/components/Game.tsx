@@ -7,9 +7,7 @@ import _ from "lodash";
 import Linda from "./Linda";
 import DeaLQuestion from "./DealNoDeal";
 import { formatMoney } from "../domain/Money";
-import useSound from "use-sound";
 import { messageKeys } from "./linda/LindaMessage";
-const siren = require("./siren.mp3");
 
 const shuffleCases = (amounts: number[], cases: number[]) => {
   const shuffleCase = _.zip(_.shuffle(amounts), _.shuffle(cases)) as [
@@ -31,11 +29,9 @@ const momentList = caseOrder.map((num, i) => {
   return {
     index: i,
     num: cases,
-    multiplier: multiplier[i] || max,
+    meanAverageSplit: multiplier[i] || max,
   };
 });
-
-console.log(momentList);
 
 const Game: React.FC<{}> = () => {
   const [msg, setMsg] = useState<messageKeys[]>(["start"]);
@@ -46,10 +42,9 @@ const Game: React.FC<{}> = () => {
   const [cases, setCases] = useState(new Set(startCases()));
   const [mine, setMine] = useState<number | undefined>();
   const [moment, setMoment] = useState(momentList[0]);
-  const [lastAmount, setLastamount] = useState(0);
+  const [lastAmount, setLastAmount] = useState(0);
   const [bank, setBank] = useState(0);
   const [showBank, setShowBank] = useState(false);
-  const [playSiren] = useSound(siren.default);
 
   const pickMoney = (num: number) => {
     const arr = Array.from(moneyLeft).filter((v) => v !== num);
@@ -62,7 +57,7 @@ const Game: React.FC<{}> = () => {
     setCases(new Set(arr));
   };
 
-  const initGame = () => {
+  const resetGame = () => {
     setMoney(new Set(startMoney()));
     setCases(new Set(startCases()));
     setMapping(shuffleCases(allCases, allMoney));
@@ -72,54 +67,63 @@ const Game: React.FC<{}> = () => {
     setMsg(["start"]);
   };
 
-  const startCase = (num: number) => {
-    setMine(num);
-    setMsg(["first6"]);
+  const caseValueMessage = (amountInCase: number): messageKeys => {
+    if (amountInCase > allMoney[22]) {
+      return "expensive";
+    } else if (amountInCase < allMoney[6]) {
+      return "cheap";
+    }
+    return "regular";
+  };
+
+  const bankMoment = (amountInCase: number) => {
+    const sortedMoneyLeft = Array.from(moneyLeft)
+      .filter((n) => n !== amountInCase)
+      .sort((a, b) => a - b);
+    // total pot
+    const pot = sortedMoneyLeft.reduce((mem, amount) => mem + amount, 0);
+    // average (is way to high early game)
+    const average = pot / moneyLeft.size;
+
+    const meanIndex = Math.floor(moneyLeft.size / 2);
+    // the mean is a boring round numbers
+    const mean = sortedMoneyLeft[meanIndex];
+
+    const diff = average - mean;
+    // so pick a amount between the mean and average bases on a meanAverageSplit constant
+    const bank = mean + diff * moment.meanAverageSplit;
+    setBank(bank);
+    setTimeout(() => {
+      setMsg(["bankResult"]);
+      setShowBank(true);
+    }, 4000);
   };
 
   const handleClickCase = (num: number) => {
     if (bank) return;
     pickCase(num);
     if (!mine) {
-      startCase(num);
+      // first pick you're own case
+      setMine(num);
+      setMsg(["first6"]);
       return;
     }
     const myAmount = mine && (mapping.get(mine) as number);
     const amountInCase = mapping.get(num);
     if (!amountInCase || !myAmount) return;
 
-    let caseVal: messageKeys;
-    if (amountInCase > allMoney[22]) {
-      caseVal = "expensive";
-    } else if (amountInCase < allMoney[6]) {
-      caseVal = "cheap";
-    } else {
-      caseVal = "regular";
-    }
-
-    setLastamount(amountInCase);
+    const caseVal = caseValueMessage(amountInCase);
+    setLastAmount(amountInCase);
     pickMoney(amountInCase);
+
     if (cases.size === 1) {
+      // picked all cases, end game
       setBank(myAmount);
       setMsg(["end"]);
     } else if (cases.size - 1 === moment.num) {
+      // Bank moment
       setMsg([caseVal, "bank"]);
-      const left = Array.from(moneyLeft)
-        .filter((n) => n !== num)
-        .sort((a, b) => a - b);
-      const pot = left.reduce((mem, amount) => mem + amount, 0);
-      const average = pot / moneyLeft.size;
-      const meanIndex = Math.floor(moneyLeft.size / 2);
-      const mean = left[meanIndex];
-      const diff = average - mean;
-      const bank = mean + diff * moment.multiplier;
-      console.log({ mean, average, meanIndex, left, moment, diff });
-      setBank(bank);
-      setTimeout(() => {
-        setMsg(["bankResult"]);
-        playSiren();
-        setShowBank(true);
-      }, 4000);
+      bankMoment(amountInCase);
     } else {
       setMsg([caseVal, "continue"]);
     }
@@ -152,7 +156,7 @@ const Game: React.FC<{}> = () => {
             lastAmount={lastAmount}
             mine={mine && mapping.get(mine)}
           />
-          <DeaLQuestion handleResponce={handleDealResponse} showBank={showBank}>
+          <DeaLQuestion handleResponse={handleDealResponse} showBank={showBank}>
             {formatMoney(bank)}
           </DeaLQuestion>
           <div>
@@ -161,7 +165,7 @@ const Game: React.FC<{}> = () => {
               cases={cases}
               pickCase={handleClickCase}
             />
-            <div className="reset" onClick={initGame}>
+            <div className="reset" onClick={resetGame}>
               Reset
             </div>
           </div>
