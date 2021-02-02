@@ -48,7 +48,6 @@ const Game: React.FC<{}> = () => {
 
   const pickMoney = (num: number) => {
     const arr = Array.from(moneyLeft).filter((v) => v !== num);
-    console.log(arr);
     setMoney(new Set(arr));
   };
 
