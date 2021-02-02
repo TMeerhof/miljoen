@@ -95,7 +95,7 @@ const Game: React.FC<{}> = () => {
     setTimeout(() => {
       setMsg(["bankResult"]);
       setShowBank(true);
-    }, 4000);
+    }, 4500);
   };
 
   const handleClickCase = (num: number) => {
