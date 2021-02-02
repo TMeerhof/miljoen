@@ -19,7 +19,9 @@
 
 .mid {
   display: flex;
+  max-width: 90vh;
   flex-direction: column;
+  justify-content: space-around;
 }
 
 .reset {

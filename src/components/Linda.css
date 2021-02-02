@@ -3,8 +3,8 @@
 }
 
 .linda {
-  height: 30vh;
-  width: 30vh;
+  height: 35vh;
+  width: 35vh;
   position: relative;
 }
 .linda-speak {
@@ -13,7 +13,7 @@
   align-items: center;
   position: relative;
   padding: 0 4vh;
-  height: 30vh;
+  height: 35vh;
   width: 45vh;
   background-color: white;
   border-radius: 5vh;
@@ -30,8 +30,8 @@
   transform: translate(-50%, 20%);
 }
 .linda .part {
-  height: 20vw;
-  width: 20vw;
+  height: 35vh;
+  width: 35vh;
   background-size: contain;
   position: absolute;
   left: 0;

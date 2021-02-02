@@ -2,18 +2,18 @@
   display: flex;
   width: 2;
   flex-wrap: wrap;
-  max-width: 54vmax;
   margin-left: auto;
   margin-right: auto;
   cursor: pointer;
+  justify-content: center;
 }
 
 .case {
   position: relative;
-  height: 5vmax;
-  width: 7vmax;
-  margin: 1vmax;
-  font-size: 2.5vmax;
+  height: 7vh;
+  width: 10vh;
+  margin: 1.5vh;
+  font-size: 2.5vh;
 }
 .case .number {
   color: black;
