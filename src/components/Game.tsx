@@ -156,7 +156,7 @@ const Game: React.FC<{}> = () => {
       setMsg(['deal', 'checkOwn']);
       afterLinda(() => {
         setMsg(['showOwn']);
-      }, 500);
+      }, 1500);
     } else {
       setMsg(['noDeal']);
       setBank(0);

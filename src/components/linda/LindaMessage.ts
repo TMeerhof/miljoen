@@ -33,10 +33,22 @@ const sentenceFactory = (
   return FactoryParamsFunction(factory);
 };
 
+const lastPick: Record<string, number> = {};
+// random does not feel random, force change
+const randomIsNotRandomEnoughSample = (key: string, strings: string[]) => {
+  let index;
+  let i = 0;
+  do {
+    index = Math.floor(Math.floor(Math.random() * strings.length));
+  } while (index === lastPick[key] && i++ < 10);
+  lastPick[key] = index;
+  return strings[index];
+};
+
 export const messages = {
   start: (params: StringParams) =>
     sentenceFactory(params, (p) => {
-      return sample([
+      return randomIsNotRandomEnoughSample('start', [
         'Welkom bij miljoenenjacht LessonUppers, kies nu eerst jouw eigen koffer.',
         'Welkom bij miljoenenjacht, Ik heb er zin in! Kies nu eerst de koffer.',
         'Welkom bij miljoenenjacht, doe je best, dan is het volgende bedrijfsuitje op Bonaire, kies nu eerst je eigen koffer.',
@@ -44,14 +56,14 @@ export const messages = {
     }),
   first6: (params: StringParams) =>
     sentenceFactory(params, (p) => {
-      return sample([
+      return randomIsNotRandomEnoughSample('first6', [
         `Dan kunnen we nu echt beginnen!!\n Kies nu je eerste ${p.pluralCase}, dan krijg je een aanbod van de bank!`,
         `Kies nu je eerste ${p.pluralCase}, dan gaan we voor het eerst van de bank horen!`,
       ]);
     }),
   bank: (params: StringParams) =>
     sentenceFactory(params, (p) => {
-      return sample([
+      return randomIsNotRandomEnoughSample('bank', [
         `Dan is het nu tijd voor de bank, spannend!!, wat zou het worden?!`,
         `Oh volgens mij wil je bank een aanbod doen, wat zou het worden?`,
         `Heb je die bank weer, lijkt Daan wel met dat gedoe over geld.`,
@@ -59,7 +71,7 @@ export const messages = {
     }),
   bankResult: (params: StringParams) =>
     sentenceFactory(params, (p) => {
-      return sample([
+      return randomIsNotRandomEnoughSample('bankResult', [
         `${p.formatBank}!! nou DEAL of niet?`,
         `Oh, daar zou ik wel even over na moeten denken! Deal of niet?`,
         `Zo he, daar zou Jasper veel speciaalbiertjes van kunnen kopen. Nou gun je het hem?`,
@@ -68,7 +80,7 @@ export const messages = {
     }),
   continue: (params: StringParams) =>
     sentenceFactory(params, (p) => {
-      return sample([
+      return randomIsNotRandomEnoughSample('continue', [
         `Nog ${p.pluralCase} tot de bank.`,
         `Nog ${p.pluralCase} tot we weer wat horen.`,
         `Nog ${p.pluralCase}, kom op!`,
@@ -76,7 +88,7 @@ export const messages = {
     }),
   cheap: (params: StringParams) =>
     sentenceFactory(params, (p) => {
-      return sample([
+      return randomIsNotRandomEnoughSample('cheap', [
         `Fijn zo'n goedkope ${p.formatAmount}!!`,
         `${p.formatAmount} dat is lekker, vindt de Bank verschrikkelijk.`,
         `${p.formatAmount}, ongeveer wat Tim zou vragen aan docenten voor LessonUp als het aan hem lag.`,
@@ -84,7 +96,7 @@ export const messages = {
     }),
   lowerHalfAmount: (params: StringParams) =>
     sentenceFactory(params, (p) => {
-      return sample([
+      return randomIsNotRandomEnoughSample('lowerHalfAmount', [
         `${p.formatAmount}.`,
         `${p.formatAmount}, prima!`,
         `${p.formatAmount}, kan erger.`,
@@ -93,42 +105,42 @@ export const messages = {
     }),
   upperHalfAmount: (params: StringParams) =>
     sentenceFactory(params, (p) => {
-      return sample([
-        `${p.formatAmount}. Lisa zou dat een mooie dealbedrag vinden.`,
+      return randomIsNotRandomEnoughSample('upperHalfAmount', [
+        `${p.formatAmount}. Lisa zou dat een mooi dealbedrag vinden.`,
         `${p.formatAmount}, kan erger.`,
       ]);
     }),
   expensive: (params: StringParams) =>
     sentenceFactory(params, (p) => {
-      return sample([
+      return randomIsNotRandomEnoughSample('expensive', [
         `Ai, ${p.formatAmount}! Dat is een dure, balen!!`,
         `Godsknokke, dat is zonder van die ${p.formatAmount}.`,
       ]);
     }),
   deal: (params: StringParams) =>
     sentenceFactory(params, (p) => {
-      return sample([
+      return randomIsNotRandomEnoughSample('deal', [
         `${p.formatBank} DEAL!!!! Gefeliciteerd! Wat ga je er mee doen?`,
         `${p.formatBank} DEAL!!!! Nou jij wordt de nieuwe investeerder van LessonUp.`,
       ]);
     }),
   checkOwn: (params: StringParams) =>
     sentenceFactory(params, (p) => {
-      return sample([
+      return randomIsNotRandomEnoughSample('checkOwn', [
         `laten we nu kijken wat in je koffer zit.`,
         `Nog ff snel in dat doosje van je kijken.`,
       ]);
     }),
   showOwn: (params: StringParams) =>
     sentenceFactory(params, (p) => {
-      return sample([
+      return randomIsNotRandomEnoughSample('showOwn', [
         `Roffel de boffel de roffel, het issssss: ${p.formatMine}! zo he.`,
         `${p.formatMine}! Zat dat er gewoon heel de tijd al in, joh!`,
       ]);
     }),
   end: (params: StringParams) =>
     sentenceFactory(params, (p) => {
-      return sample([
+      return randomIsNotRandomEnoughSample('end', [
         `${p.formatAmount} in je koffer! Heb je daar nu zo lang op gewacht`,
         `${p.formatAmount}! Helemaal uitgespeeld, succes er mee`,
         `${p.formatAmount}! Kon je niet kiezen, wat jammer?`,
@@ -136,7 +148,7 @@ export const messages = {
     }),
   noDeal: (params: StringParams) =>
     sentenceFactory(params, (p) => {
-      return sample([
+      return randomIsNotRandomEnoughSample('noDeal', [
         `Gaan we nu weer lekker verder met ${p.pluralCase}`,
         `Ok jammer, ik dacht echt dat dit hem ging woorden, ${p.pluralCase} te gaan.`,
         `Niet?! Maak is eens een keus joh, nou ja over ${p.pluralCase} nog een kans`,

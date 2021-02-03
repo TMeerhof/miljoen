@@ -1,9 +1,8 @@
 import classNames from 'classnames';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Linda.css';
 import useDeepCompareMemoize from '../hooks/useDeepCompareMemoize';
 import useSound from 'use-sound';
-import { sample } from 'lodash';
 import { messages, messageKeys, messageString } from './linda/LindaMessage';
 import AnimateWord from './AnimateWord';
 import { DealButton } from './DealNoDeal';
@@ -29,12 +28,14 @@ const Linda: React.FC<Props> = ({
   const msgList = useDeepCompareMemoize<messageKeys[]>(msg);
   const [start, setStart] = useState(false);
   const [active, setActive] = useState(false);
+  const [sentence, setSentence] = useState('');
 
-  const sentence = useMemo(() => {
-    return msgList.reduce((memo, key) => {
+  useEffect(() => {
+    const string = msgList.reduce((memo, key) => {
       const picked = messages[key] as messageString;
       return [memo, picked({ casesToOpen, bank, lastAmount, mine })].join(' ');
     }, '');
+    setSentence(string);
   }, [msgList, bank, casesToOpen, lastAmount, mine]);
 
   const [playLinda, { stop: stopLinda }] = useSound(sound.default);

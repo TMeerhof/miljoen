@@ -48,6 +48,7 @@
 }
 .linda .mouth {
   background-image: url(./linda/lindamond.png);
+  transform: scale(1.02) translateX(0.05%);
 }
 .linda .main {
   background-image: url(./linda/lindahoofd.png);
