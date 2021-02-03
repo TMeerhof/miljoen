@@ -1,5 +1,4 @@
 import { formatMoney } from '../../domain/Money';
-import { sample } from 'lodash';
 
 interface StringParams {
   casesToOpen: number;

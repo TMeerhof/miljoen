@@ -33,11 +33,14 @@ const momentList = caseOrder.map((num, i) => {
   };
 });
 
+const allMoney = startMoney();
+const allCases = startCases().reverse();
+// out of reacts scope to prevent console pirates getting it to easy
+let mapping = shuffleCases(allCases, allMoney);
+let showMine = false;
+
 const Game: React.FC<{}> = () => {
   const [msg, setMsg] = useState<messageKeys[]>(['start']);
-  const [allMoney] = useState(startMoney());
-  const [allCases] = useState(startCases().reverse());
-  const [mapping, setMapping] = useState(shuffleCases(allCases, allMoney));
   const [moneyLeft, setMoney] = useState(new Set(startMoney()));
   const [cases, setCases] = useState(new Set(startCases()));
   const [mine, setMine] = useState<number | undefined>();
@@ -60,10 +63,12 @@ const Game: React.FC<{}> = () => {
   const resetGame = () => {
     setMoney(new Set(startMoney()));
     setCases(new Set(startCases()));
-    setMapping(shuffleCases(allCases, allMoney));
+    mapping = shuffleCases(allCases, allMoney);
+    showMine = false;
     setMoment(momentList[0]);
     setShowBank(false);
     setBank(0);
+    setMine(0);
     setMsg(['start']);
   };
 
@@ -141,6 +146,7 @@ const Game: React.FC<{}> = () => {
       // picked all cases, end game
       setBank(myAmount);
       setMsg(['end']);
+      showMine = true;
     } else if (cases.size - 1 === moment.num) {
       // Bank moment
       setMsg([caseVal, 'bank']);
@@ -153,6 +159,7 @@ const Game: React.FC<{}> = () => {
   const handleDealResponse = (answer: boolean) => {
     console.log('Deal', answer);
     if (answer) {
+      showMine = true;
       setMsg(['deal', 'checkOwn']);
       afterLinda(() => {
         setMsg(['showOwn']);
@@ -175,7 +182,7 @@ const Game: React.FC<{}> = () => {
             casesToOpen={cases.size - moment.num}
             bank={bank}
             lastAmount={lastAmount}
-            mine={mine && mapping.get(mine)}
+            mine={mine && showMine ? mapping.get(mine) : 0}
             lindaDoneCallback={handleLindaDone}
           />
           <DeaLQuestion handleResponse={handleDealResponse} showBank={showBank}>
