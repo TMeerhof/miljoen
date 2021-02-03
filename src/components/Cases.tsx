@@ -1,6 +1,6 @@
-import classNames from "classnames";
-import React from "react";
-import "./Cases.css";
+import classNames from 'classnames';
+import React from 'react';
+import './Cases.css';
 
 interface Props {
   allCases: number[];
@@ -32,7 +32,7 @@ interface CaseProps {
 const Case: React.FC<CaseProps> = ({ number, hidden, pickCase }) => {
   return (
     <div
-      className={classNames("case", { hidden })}
+      className={classNames('case', { hidden })}
       onClick={() => pickCase(number)}
     >
       <CaseSVG />

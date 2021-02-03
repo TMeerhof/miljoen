@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
-import useSound from "use-sound";
-import "./DealNoDeal.css";
-const siren = require("./siren.mp3");
+import React, { useEffect } from 'react';
+import useSound from 'use-sound';
+import './DealNoDeal.css';
+const siren = require('./siren.mp3');
 
 interface Props {
   handleResponse: (deal: boolean) => void;

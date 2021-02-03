@@ -1,5 +1,5 @@
-import React from "react";
-import "./Screen.css";
+import React from 'react';
+import './Screen.css';
 
 interface Props {
   msg: string;

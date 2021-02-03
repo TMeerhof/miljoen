@@ -1,4 +1,4 @@
-import _ from "lodash";
+import _ from 'lodash';
 const money = [
   0.01,
   0.2,

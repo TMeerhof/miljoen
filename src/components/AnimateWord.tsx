@@ -1,7 +1,7 @@
-import classNames from "classnames";
-import React, { useEffect, useMemo, useState } from "react";
-import useInterval from "../hooks/useIterval";
-import "./AnimateWord.css";
+import classNames from 'classnames';
+import React, { useEffect, useMemo, useState } from 'react';
+import useInterval from '../hooks/useIterval';
+import './AnimateWord.css';
 
 interface Props {
   active: boolean;
@@ -13,9 +13,9 @@ const notVisible = (char: CharProps) => !char.visible;
 
 const AnimateWord: React.FC<Props> = ({ active, msg, handleDone }) => {
   const sentenceMemo: CharProps[][] = useMemo(() => {
-    const words = msg.split(" ");
+    const words = msg.split(' ');
     return words.map((chars) =>
-      chars.split("").map((char) => ({ char, visible: false }))
+      chars.split('').map((char) => ({ char, visible: false }))
     );
   }, [msg]);
 
@@ -36,7 +36,7 @@ const AnimateWord: React.FC<Props> = ({ active, msg, handleDone }) => {
       sentence[wordIndex][charIndex].visible = true;
       setSentence([...sentence]);
     },
-    active ? 50 : null
+    active ? 40 : null
   );
 
   return (
@@ -71,9 +71,9 @@ interface CharProps {
   visible: boolean;
 }
 const Letter: React.FC<CharProps> = ({ char, visible }) => {
-  return char === "\n" ? (
+  return char === '\n' ? (
     <span className="break-line"></span>
   ) : (
-    <span className={classNames("letter", { visible })}>{char}</span>
+    <span className={classNames('letter', { visible })}>{char}</span>
   );
 };

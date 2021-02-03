@@ -1,7 +1,7 @@
-import classNames from "classnames";
-import React from "react";
-import "./MoneyOptions.css";
-import { formatMoney } from "../domain/Money";
+import classNames from 'classnames';
+import React from 'react';
+import './MoneyOptions.css';
+import { formatMoney } from '../domain/Money';
 
 interface Props {
   startMoney: number[];
@@ -44,7 +44,7 @@ interface MoneyBarProps {
 const MoneyBar: React.FC<MoneyBarProps> = ({ amount, hidden }) => {
   return (
     <div
-      className={classNames("money-bar", {
+      className={classNames('money-bar', {
         hidden,
       })}
     >

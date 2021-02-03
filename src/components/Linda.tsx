@@ -15,6 +15,7 @@ interface Props {
   lastAmount: number;
   bank: number;
   mine: number | undefined;
+  lindaDoneCallback: Function;
 }
 
 const Linda: React.FC<Props> = ({
@@ -23,6 +24,7 @@ const Linda: React.FC<Props> = ({
   bank,
   lastAmount,
   mine,
+  lindaDoneCallback,
 }) => {
   const msgList = useDeepCompareMemoize<messageKeys[]>(msg);
   const [start, setStart] = useState(false);
@@ -50,6 +52,7 @@ const Linda: React.FC<Props> = ({
   const handleDone = () => {
     stopLinda();
     setActive(false);
+    lindaDoneCallback();
   };
 
   return (

@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { startCases, startMoney } from "../domain/Start";
-import Cases from "./Cases";
-import "./Game.css";
-import MoneyOptions from "./MoneyOptions";
-import _ from "lodash";
-import Linda from "./Linda";
-import DeaLQuestion from "./DealNoDeal";
-import { formatMoney } from "../domain/Money";
-import { messageKeys } from "./linda/LindaMessage";
+import React, { useCallback, useRef, useState } from 'react';
+import { startCases, startMoney } from '../domain/Start';
+import Cases from './Cases';
+import './Game.css';
+import MoneyOptions from './MoneyOptions';
+import _ from 'lodash';
+import Linda from './Linda';
+import DeaLQuestion from './DealNoDeal';
+import { formatMoney } from '../domain/Money';
+import { messageKeys } from './linda/LindaMessage';
 
 const shuffleCases = (amounts: number[], cases: number[]) => {
   const shuffleCase = _.zip(_.shuffle(amounts), _.shuffle(cases)) as [
@@ -34,7 +34,7 @@ const momentList = caseOrder.map((num, i) => {
 });
 
 const Game: React.FC<{}> = () => {
-  const [msg, setMsg] = useState<messageKeys[]>(["start"]);
+  const [msg, setMsg] = useState<messageKeys[]>(['start']);
   const [allMoney] = useState(startMoney());
   const [allCases] = useState(startCases().reverse());
   const [mapping, setMapping] = useState(shuffleCases(allCases, allMoney));
@@ -45,6 +45,7 @@ const Game: React.FC<{}> = () => {
   const [lastAmount, setLastAmount] = useState(0);
   const [bank, setBank] = useState(0);
   const [showBank, setShowBank] = useState(false);
+  const lindaCallback = useRef<Function | undefined>(undefined);
 
   const pickMoney = (num: number) => {
     const arr = Array.from(moneyLeft).filter((v) => v !== num);
@@ -63,16 +64,36 @@ const Game: React.FC<{}> = () => {
     setMoment(momentList[0]);
     setShowBank(false);
     setBank(0);
-    setMsg(["start"]);
+    setMsg(['start']);
   };
 
+  const handleLindaDone = useCallback(() => {
+    lindaCallback.current?.();
+  }, []);
+
   const caseValueMessage = (amountInCase: number): messageKeys => {
-    if (amountInCase > allMoney[22]) {
-      return "expensive";
-    } else if (amountInCase < allMoney[6]) {
-      return "cheap";
+    const quarterIndex = (quarter: number) =>
+      Math.round((allMoney.length / 4) * quarter);
+
+    console.log('quarter', quarterIndex(2));
+    if (amountInCase > allMoney[quarterIndex(3)]) {
+      return 'expensive';
+    } else if (amountInCase < allMoney[quarterIndex(1)]) {
+      return 'cheap';
+    } else if (amountInCase > allMoney[quarterIndex(2)]) {
+      return 'upperHalfAmount';
     }
-    return "regular";
+    return 'lowerHalfAmount';
+  };
+
+  // do this after delay after linda is done speaking
+  const afterLinda = (func: Function, delay: number) => {
+    lindaCallback.current = () => {
+      setTimeout(() => {
+        func();
+      }, delay);
+      lindaCallback.current = undefined;
+    };
   };
 
   const bankMoment = (amountInCase: number) => {
@@ -92,10 +113,10 @@ const Game: React.FC<{}> = () => {
     // so pick a amount between the mean and average bases on a meanAverageSplit constant
     const bank = mean + diff * moment.meanAverageSplit;
     setBank(bank);
-    setTimeout(() => {
-      setMsg(["bankResult"]);
+    afterLinda(() => {
+      setMsg(['bankResult']);
       setShowBank(true);
-    }, 4500);
+    }, 800);
   };
 
   const handleClickCase = (num: number) => {
@@ -104,7 +125,7 @@ const Game: React.FC<{}> = () => {
     if (!mine) {
       // first pick you're own case
       setMine(num);
-      setMsg(["first6"]);
+      setMsg(['first6']);
       return;
     }
     const myAmount = mine && (mapping.get(mine) as number);
@@ -112,31 +133,32 @@ const Game: React.FC<{}> = () => {
     if (!amountInCase || !myAmount) return;
 
     const caseVal = caseValueMessage(amountInCase);
+    console.log(amountInCase, caseVal);
     setLastAmount(amountInCase);
     pickMoney(amountInCase);
 
     if (cases.size === 1) {
       // picked all cases, end game
       setBank(myAmount);
-      setMsg(["end"]);
+      setMsg(['end']);
     } else if (cases.size - 1 === moment.num) {
       // Bank moment
-      setMsg([caseVal, "bank"]);
+      setMsg([caseVal, 'bank']);
       bankMoment(amountInCase);
     } else {
-      setMsg([caseVal, "continue"]);
+      setMsg([caseVal, 'continue']);
     }
   };
 
   const handleDealResponse = (answer: boolean) => {
-    console.log("Deal", answer);
+    console.log('Deal', answer);
     if (answer) {
-      setMsg(["deal", "checkOwn"]);
-      setTimeout(() => {
-        setMsg(["showOwn"]);
-      }, 4000);
+      setMsg(['deal', 'checkOwn']);
+      afterLinda(() => {
+        setMsg(['showOwn']);
+      }, 500);
     } else {
-      setMsg(["noDeal"]);
+      setMsg(['noDeal']);
       setBank(0);
       setShowBank(false);
       setMoment(momentList[moment.index + 1]);
@@ -154,6 +176,7 @@ const Game: React.FC<{}> = () => {
             bank={bank}
             lastAmount={lastAmount}
             mine={mine && mapping.get(mine)}
+            lindaDoneCallback={handleLindaDone}
           />
           <DeaLQuestion handleResponse={handleDealResponse} showBank={showBank}>
             {formatMoney(bank)}
