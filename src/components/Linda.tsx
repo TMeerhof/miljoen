@@ -1,13 +1,13 @@
-import classNames from "classnames";
-import React, { useEffect, useMemo, useState } from "react";
-import "./Linda.css";
-import useDeepCompareMemoize from "../hooks/useDeepCompareMemoize";
-import useSound from "use-sound";
-import { sample } from "lodash";
-import { messages, messageKeys, messageString } from "./linda/LindaMessage";
-import AnimateWord from "./AnimateWord";
-import { DealButton } from "./DealNoDeal";
-const sound = require("./linda/animalese.wav");
+import classNames from 'classnames';
+import React, { useEffect, useMemo, useState } from 'react';
+import './Linda.css';
+import useDeepCompareMemoize from '../hooks/useDeepCompareMemoize';
+import useSound from 'use-sound';
+import { sample } from 'lodash';
+import { messages, messageKeys, messageString } from './linda/LindaMessage';
+import AnimateWord from './AnimateWord';
+import { DealButton } from './DealNoDeal';
+const sound = require('./linda/animalese.wav');
 
 interface Props {
   msg: messageKeys[];
@@ -30,10 +30,9 @@ const Linda: React.FC<Props> = ({
 
   const sentence = useMemo(() => {
     return msgList.reduce((memo, key) => {
-      const options = messages[key];
-      const picked = sample(options) as messageString;
-      return [memo, picked({ casesToOpen, bank, lastAmount, mine })].join(" ");
-    }, "");
+      const picked = messages[key] as messageString;
+      return [memo, picked({ casesToOpen, bank, lastAmount, mine })].join(' ');
+    }, '');
   }, [msgList, bank, casesToOpen, lastAmount, mine]);
 
   const [playLinda, { stop: stopLinda }] = useSound(sound.default);
@@ -57,7 +56,7 @@ const Linda: React.FC<Props> = ({
     <div className="linda-total">
       <>
         <div className="linda-container">
-          <div className={classNames("linda", { active })}>
+          <div className={classNames('linda', { active })}>
             <div className="part body"></div>
             <div className="part head">
               <div className="part main"></div>
